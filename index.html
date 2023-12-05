@@ -1,0 +1,47 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vercel GitHub Example</title>
+</head>
+<body>
+    <h1>Submit a Message</h1>
+    <form id="messageForm">
+        <label for="chat_id">Chat ID:</label>
+        <input type="text" id="chat_id" name="chat_id" required><br>
+        <label for="message_text">Message Text:</label>
+        <textarea id="message_text" name="message_text" required></textarea><br>
+        <button type="button" onclick="sendMessage()">Send Message</button>
+    </form>
+    <p id="result"></p>
+
+    <script>
+        async function sendMessage() {
+            const chatId = document.getElementById("chat_id").value;
+            const messageText = document.getElementById("message_text").value;
+
+            try {
+                const response = await fetch("/api/send_message", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ chat_id: chatId, message_text: messageText }),
+                });
+
+                if (response.ok) {
+                    document.getElementById("result").textContent = "Message sent successfully!";
+                } else {
+                    const data = await response.json();
+                    document.getElementById("result").textContent = `Failed to send message. ${data.error}`;
+                }
+            } catch (error) {
+                document.getElementById("result").textContent = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
